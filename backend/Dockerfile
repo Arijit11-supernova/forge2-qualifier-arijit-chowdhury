@@ -13,6 +13,7 @@ RUN cp .env.example .env
 RUN composer install --no-dev --optimize-autoloader
 RUN touch database/database.sqlite
 RUN php artisan migrate --force
+RUN php artisan db:seed --force
 RUN php artisan key:generate --force
 
 EXPOSE 10000
