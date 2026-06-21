@@ -85,81 +85,89 @@ const App = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-900 text-slate-100 p-8 font-sans">
-            <header className="flex justify-between items-center mb-12 max-w-7xl mx-auto">
-                <div>
-                    <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2">Kanban Workspace</h1>
-                    <p className="text-slate-400">Manage your project tasks and team flow</p>
+        <div className="min-h-screen bg-[#0f172a] text-slate-200 p-8 font-sans selection:bg-indigo-500/30">
+            <header className="flex justify-between items-center mb-12 max-w-7xl mx-auto border-b border-slate-800 pb-8">
+                <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                        <MoveRight className="text-white" size={24} />
+                    </div>
+                    <div>
+                        <h1 className="text-3xl font-black tracking-tight text-white">Kanban <span className="text-indigo-500">API</span></h1>
+                        <p className="text-slate-500 text-sm">Precision task tracking for agile teams</p>
+                    </div>
                 </div>
-                <button onClick={createBoard} className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20">
-                    <Plus size={20} /> Create Board
+                <button onClick={createBoard} className="group bg-white hover:bg-slate-100 text-slate-900 font-bold px-5 py-2.5 rounded-lg flex items-center gap-2 transition-all active:scale-95 shadow-sm">
+                    <Plus size={18} className="group-hover:rotate-90 transition-transform" />
+                    <span>New Board</span>
                 </button>
             </header>
 
-            <div className="flex gap-3 mb-10 max-w-7xl mx-auto overflow-x-auto pb-2">
+            <nav className="flex gap-3 mb-10 max-w-7xl mx-auto overflow-x-auto scrollbar-hide">
                 {boards.map(b => (
                     <button 
                         key={b.id} 
                         onClick={() => setActiveBoardId(b.id)} 
-                        className={`px-5 py-2 rounded-full font-medium transition-all ${activeBoardId === b.id ? 'bg-indigo-500 text-white ring-2 ring-indigo-300 ring-offset-2 ring-offset-slate-900' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
+                        className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${activeBoardId === b.id ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'}`}
                     >
                         {b.name}
                     </button>
                 ))}
-            </div>
+            </nav>
 
-            <div className="flex gap-8 items-start overflow-x-auto max-w-7xl mx-auto pb-12">
+            <div className="flex gap-6 items-start overflow-x-auto max-w-7xl mx-auto pb-12 snap-x">
                 {lists.filter(l => l.board_id === activeBoardId).map(list => (
-                    <div key={list.id} className="bg-slate-800/50 border border-slate-700 p-5 rounded-xl w-80 flex-shrink-0 shadow-xl">
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="font-bold text-xl text-slate-200 flex items-center gap-2">
-                                <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
-                                {list.name}
-                            </h3>
-                            <button onClick={() => createCard(list.id)} className="p-1 text-slate-400 hover:text-white hover:bg-slate-700 rounded-md transition">
-                                <Plus size={20} />
+                    <div key={list.id} className="bg-slate-800/40 border border-slate-700/50 p-4 rounded-2xl w-80 flex-shrink-0 snap-start shadow-sm">
+                        <div className="flex justify-between items-center mb-5 px-1">
+                            <div className="flex items-center gap-2">
+                                <h3 className="font-bold text-slate-100 text-sm uppercase tracking-wider opacity-90">{list.name}</h3>
+                                <span className="bg-slate-700 text-slate-400 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                                    {cards.filter(c => c.list_id === list.id).length}
+                                </span>
+                            </div>
+                            <button onClick={() => createCard(list.id)} className="p-1 text-slate-500 hover:text-indigo-400 hover:bg-slate-700 rounded-lg transition-all">
+                                <Plus size={18} />
                             </button>
                         </div>
                         
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             {cards.filter(c => c.list_id === list.id).map(card => (
-                                <div key={card.id} className="bg-slate-700 p-5 rounded-lg shadow-sm border-l-4 border-indigo-500 hover:bg-slate-600 transition-colors group relative">
+                                <div key={card.id} className="bg-[#1e293b] p-4 rounded-xl shadow-sm border border-slate-700/50 hover:border-indigo-500/50 transition-all group">
                                     <div className="flex justify-between items-start mb-3">
-                                        <span className="font-semibold text-slate-100 text-lg leading-tight">{card.title}</span>
+                                        <span className="font-semibold text-slate-100 text-sm leading-relaxed">{card.title}</span>
                                         <button 
                                             onClick={() => moveCard(card.id, lists.find(l => l.id !== list.id && l.board_id === activeBoardId)?.id)} 
-                                            className="p-1.5 bg-slate-600 text-slate-300 rounded hover:bg-indigo-500 hover:text-white transition-all" 
+                                            className="p-1 bg-slate-800 text-slate-500 rounded-md hover:bg-indigo-600 hover:text-white transition-colors" 
                                             title="Move Card"
                                         >
-                                            <MoveRight size={14} />
+                                            <MoveRight size={12} />
                                         </button>
                                     </div>
                                     
-                                    <div className="flex flex-wrap gap-2 mb-4">
+                                    <div className="flex flex-wrap gap-1.5 mb-4">
                                         {card.tags?.map(t => (
-                                            <span key={t.id} className="text-[11px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider text-white" style={{ backgroundColor: t.color }}>{t.name}</span>
+                                            <span key={t.id} className="text-[9px] px-2 py-0.5 rounded-md font-bold uppercase tracking-tight text-white shadow-sm" style={{ backgroundColor: t.color }}>{t.name}</span>
                                         ))}
                                     </div>
 
-                                    <div className="flex items-center justify-between mt-6 pt-4 border-t border-slate-600">
-                                        <div className="flex flex-col gap-2">
+                                    <div className="flex items-center justify-between pt-3 border-t border-slate-700/50">
+                                        <div className="flex flex-col gap-1.5">
                                             {card.due_date && (
-                                                <div className={`flex items-center gap-1.5 text-xs ${card.is_overdue ? 'text-red-400 font-bold' : 'text-slate-400'}`}>
-                                                    <Calendar size={14} /> {card.due_date.split('T')[0]}
-                                                    {card.is_overdue && <AlertCircle size={14} />}
+                                                <div className={`flex items-center gap-1.5 text-[11px] ${card.is_overdue ? 'text-red-400 font-bold' : 'text-slate-500'}`}>
+                                                    <Calendar size={12} /> {card.due_date.split('T')[0]}
+                                                    {card.is_overdue && <AlertCircle size={12} />}
                                                 </div>
                                             )}
-                                            <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                                                <User size={14} /> {card.members?.length ? card.members.map(m => m.name).join(', ') : 'Unassigned'}
+                                            <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                                                <User size={12} /> {card.members?.length ? card.members.map(m => m.name).join(', ') : 'Unassigned'}
                                             </div>
                                         </div>
                                         
-                                        <div className="flex gap-2">
-                                            <button onClick={() => addTagToCard(card.id)} className="p-2 bg-slate-600 rounded-lg text-slate-300 hover:bg-indigo-500 hover:text-white transition-all" title="Add Tag">
-                                                <TagIcon size={16} />
+                                        <div className="flex gap-1">
+                                            <button onClick={() => addTagToCard(card.id)} className="p-1.5 bg-slate-800 text-slate-400 rounded-md hover:bg-indigo-600 hover:text-white transition-all" title="Add Tag">
+                                                <TagIcon size={14} />
                                             </button>
-                                            <button onClick={() => assignMemberToCard(card.id)} className="p-2 bg-slate-600 rounded-lg text-slate-300 hover:bg-indigo-500 hover:text-white transition-all" title="Assign Member">
-                                                <User size={16} />
+                                            <button onClick={() => assignMemberToCard(card.id)} className="p-1.5 bg-slate-800 text-slate-400 rounded-md hover:bg-indigo-600 hover:text-white transition-all" title="Assign Member">
+                                                <User size={14} />
                                             </button>
                                         </div>
                                     </div>
@@ -169,11 +177,11 @@ const App = () => {
                     </div>
                 ))}
                 
-                <button onClick={createList} className="bg-slate-800/30 border-2 border-dashed border-slate-700 p-6 rounded-xl w-80 h-fit flex flex-col items-center justify-center text-slate-500 hover:text-slate-300 hover:border-slate-500 transition-all group">
-                    <div className="p-2 bg-slate-800 rounded-full mb-2 group-hover:bg-slate-700 transition-colors">
-                        <Plus size={24} />
+                <button onClick={createList} className="bg-slate-800/20 border-2 border-dashed border-slate-700/50 p-6 rounded-2xl w-80 h-fit flex flex-col items-center justify-center text-slate-600 hover:text-slate-400 hover:border-slate-600 transition-all group">
+                    <div className="p-2 bg-slate-800 rounded-full mb-2 group-hover:scale-110 transition-transform">
+                        <Plus size={20} />
                     </div>
-                    <span className="font-medium">Add New List</span>
+                    <span className="text-xs font-bold uppercase tracking-widest">Add List</span>
                 </button>
             </div>
         </div>
