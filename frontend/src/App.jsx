@@ -69,20 +69,24 @@ const App = () => {
     };
 
     const addTagToCard = async (cardId) => {
-        const tagId = prompt("Tag ID to add:");
-        if (tagId) {
-            await CardService.attachTag(cardId, { tag_id: tagId });
-            loadInitialData();
-        }
-    };
+    if (tags.length === 0) { alert("No tags available."); return; }
+    const tagNames = tags.map(t => `${t.id}: ${t.name}`).join('\n');
+    const tagId = prompt(`Select tag number:\n${tagNames}`);
+    if (tagId) {
+        await CardService.attachTag(cardId, { tag_id: tagId });
+        loadInitialData();
+    }
+};
 
-    const assignMemberToCard = async (cardId) => {
-        const memberId = prompt("Member ID to assign:");
-        if (memberId) {
-            await CardService.assignMember(cardId, { member_id: memberId });
-            loadInitialData();
-        }
-    };
+const assignMemberToCard = async (cardId) => {
+    if (members.length === 0) { alert("No members available."); return; }
+    const memberNames = members.map(m => `${m.id}: ${m.name}`).join('\n');
+    const memberId = prompt(`Select member number:\n${memberNames}`);
+    if (memberId) {
+        await CardService.assignMember(cardId, { member_id: memberId });
+        loadInitialData();
+    }
+};
 
     return (
         <div className="min-h-screen bg-[#0f172a] text-slate-200 p-8 font-sans selection:bg-indigo-500/30">
